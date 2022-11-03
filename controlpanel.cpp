@@ -1,7 +1,6 @@
 #include "controlpanel.h"
 #include "./ui_controlpanel.h"
 using namespace std;
-#test
 
 QString defaultText = "Enter Passcode";
 QString falsePass = "Incorrect, try again";
