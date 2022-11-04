@@ -19,6 +19,8 @@ set(PROJECT_SOURCES
         controlpanel.cpp
         controlpanel.h
         controlpanel.ui
+        homesystem.cpp
+        alarm.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

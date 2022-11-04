@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>336</width>
-    <height>292</height>
+    <height>305</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -294,6 +294,20 @@ QPushButton:pressed {
      <widget class="QPushButton" name="ChangeCode">
       <property name="text">
        <string>Set Passcode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="Power">
+      <property name="text">
+       <string>Power</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QPushButton" name="stopAlarm">
+      <property name="text">
+       <string>ALARM OFF</string>
       </property>
      </widget>
     </item>

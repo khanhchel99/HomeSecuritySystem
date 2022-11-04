@@ -26,6 +26,10 @@ class ControlPanel : public QMainWindow
 public:
     ControlPanel(QWidget *parent = nullptr);
     ~ControlPanel();
+    bool getActiveStatus();
+    bool getPowerStatus();
+    void activateAlarmState();
+    bool getAlarmState();
 
 private:
     Ui::ControlPanel *ui;

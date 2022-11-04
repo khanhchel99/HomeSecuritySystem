@@ -9,6 +9,8 @@ int inputPass = 0;
 bool activate = false;
 int attemptCount = 0;
 int timer;
+bool power = 1;
+bool alarmState = 0;
 
 ControlPanel::ControlPanel(QWidget *parent)
     : QMainWindow(parent)
@@ -34,7 +36,8 @@ ControlPanel::ControlPanel(QWidget *parent)
 
     connect(ui->Activate, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->Deactivate, SIGNAL(released()), this, SLOT(KeyPressed()));
-
+    connect(ui->Power, SIGNAL(released()), this, SLOT(KeyPressed()));
+    connect(ui->stopAlarm, SIGNAL(released()), this, SLOT(KeyPressed()));
 
 }
 
@@ -75,6 +78,7 @@ void ControlPanel::KeyPressed(){
            ui->Status->setText("Active");
            attemptCount = 0;
         }else{
+
            ui->Display->setText(falsePass);
            attemptCount += 1;
            cout << attemptCount << endl;
@@ -82,6 +86,7 @@ void ControlPanel::KeyPressed(){
            if (attemptCount == 3){
 
                ui->Display->setText("Wait 10 seconds");
+               attemptCount = 0;
            }
         }
     }else if (QString::compare(keyVal, "deactivate", Qt::CaseInsensitive)==0){
@@ -91,6 +96,7 @@ void ControlPanel::KeyPressed(){
            ui->Display->setText("Success");
            ui->Status->setText("Inactive");
         }else{
+
            ui->Display->setText(falsePass);
            attemptCount += 1;
            cout << attemptCount << endl;
@@ -98,10 +104,59 @@ void ControlPanel::KeyPressed(){
            if (attemptCount == 3){
 
                ui->Display->setText("Wait 10 seconds");
+               attemptCount = 0;
+           }
+        }
+    }
+    else if (QString::compare(keyVal, "stopalarm", Qt::CaseInsensitive)==0){
+
+        if (inputPass == 112345){
+
+            alarmState = 0;
+
+        }else{
+
+           ui->Display->setText(falsePass);
+           attemptCount += 1;
+           cout << attemptCount << endl;
+
+           if (attemptCount == 3){
+
+               ui->Display->setText("Wait 10 seconds");
+               attemptCount = 0;
            }
         }
     }
 
+    else if (QString::compare(keyVal, "power", Qt::CaseInsensitive)==0){
+
+        power = 0;
+
+    }
+
+
+}
+
+bool ControlPanel::getActiveStatus(){
+
+    return activate;
+}
+
+
+bool ControlPanel::getPowerStatus(){
+
+    return power;
+}
+
+void ControlPanel::activateAlarmState(){
+
+    alarmState = 1;
+    ui->Status->setText("ALARM");
+}
+
+bool getAlarmState(){
+
+    return alarmState;
 }
 
 
