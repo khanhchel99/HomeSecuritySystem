@@ -11,6 +11,8 @@ int attemptCount = 0;
 int timer;
 bool power = 1;
 bool alarmState = 0;
+int truePassCode = 112345;
+bool changecode = false;
 
 ControlPanel::ControlPanel(QWidget *parent)
     : QMainWindow(parent)
@@ -38,7 +40,7 @@ ControlPanel::ControlPanel(QWidget *parent)
     connect(ui->Deactivate, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->Power, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->stopAlarm, SIGNAL(released()), this, SLOT(KeyPressed()));
-
+    connect(ui->ChangeCode, SIGNAL(released()), this, SLOT(KeyPressed()));
 }
 
 ControlPanel::~ControlPanel()
@@ -72,7 +74,7 @@ void ControlPanel::KeyPressed(){
     if (QString::compare(keyVal, "activate", Qt::CaseInsensitive)==0){
 
         //put in verify password here
-        if (inputPass == 112345){
+        if (inputPass == truePassCode){
            activate = true;
            ui->Display->setText("Success");
            ui->Status->setText("Active");
@@ -91,7 +93,7 @@ void ControlPanel::KeyPressed(){
         }
     }else if (QString::compare(keyVal, "deactivate", Qt::CaseInsensitive)==0){
         //put in verify password here
-        if (inputPass == 112345){
+        if (inputPass == truePassCode){
            activate = false;
            ui->Display->setText("Success");
            ui->Status->setText("Inactive");
@@ -110,7 +112,7 @@ void ControlPanel::KeyPressed(){
     }
     else if (QString::compare(keyVal, "stopalarm", Qt::CaseInsensitive)==0){
 
-        if (inputPass == 112345){
+        if (inputPass == truePassCode){
 
             alarmState = 0;
 
@@ -127,9 +129,31 @@ void ControlPanel::KeyPressed(){
            }
         }
     }
+    else if (QString::compare(keyVal, "changecode", Qt::CaseInsensitive)==0){
 
+        if(inputPass == truePassCode){
+
+            inputPass = 0;
+            changecode = true;
+
+            ui->Display->setText("Enter New Code");
+            ui->Display->repaint();
+
+            if (QString::compare(keyVal, "changecode", Qt::CaseInsensitive)==0){
+
+                if (inputPass != 0){
+                    truePassCode = inputPass;
+                    ui->Display->setText("New Passcode");
+                }
+                else{
+                    ui->Display->setText("Passcode cant be 0");
+                }
+            }
+        }
+    }
     else if (QString::compare(keyVal, "power", Qt::CaseInsensitive)==0){
 
+        ui->Display->setText("POWER OFF");
         power = 0;
 
     }

@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
         }
 
-        cout << syst->getControlPanel()->getPowerStatus() << endl;
+//        cout << syst->getControlPanel()->getPowerStatus() << endl;
     }
 
     cout << "POWERED OFF" << endl;
