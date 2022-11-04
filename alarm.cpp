@@ -22,8 +22,8 @@ public:
 
     Alarm(time_t ID, string descrip){
 
-        ID = startID;
-        descrip = description;
+        startID = ID;
+        description = descrip;
         time_t end;
         check = 1;
     }

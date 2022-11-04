@@ -1,7 +1,6 @@
 #include "controlpanel.h"
 #include "homesystem.cpp"
 #include <QApplication>
-#include <alarm.cpp>
 
 #include <signal.h>
 #include <iostream>
