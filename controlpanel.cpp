@@ -3,9 +3,12 @@
 using namespace std;
 
 QString defaultText = "Enter Passcode";
+QString defaultStatusText = "Inactive";
 QString falsePass = "Incorrect, try again";
 int inputPass = 0;
 bool activate = false;
+int attemptCount = 0;
+int timer;
 
 ControlPanel::ControlPanel(QWidget *parent)
     : QMainWindow(parent)
@@ -15,6 +18,9 @@ ControlPanel::ControlPanel(QWidget *parent)
 
     //set default text on the display
     ui->Display->setText(defaultText);
+
+    // set default text on status bar
+    ui->Status->setText(defaultStatusText);
 
     //Assign numbers to its button
     QPushButton *numButs[10];
@@ -28,6 +34,7 @@ ControlPanel::ControlPanel(QWidget *parent)
 
     connect(ui->Activate, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->Deactivate, SIGNAL(released()), this, SLOT(KeyPressed()));
+
 
 }
 
@@ -60,20 +67,38 @@ void ControlPanel::KeyPressed(){
     QPushButton *keyButton = (QPushButton *)sender();
     QString keyVal = keyButton->text();
     if (QString::compare(keyVal, "activate", Qt::CaseInsensitive)==0){
+
         //put in verify password here
         if (inputPass == 112345){
            activate = true;
            ui->Display->setText("Success");
+           ui->Status->setText("Active");
+           attemptCount = 0;
         }else{
            ui->Display->setText(falsePass);
+           attemptCount += 1;
+           cout << attemptCount << endl;
+
+           if (attemptCount == 3){
+
+               ui->Display->setText("Wait 10 seconds");
+           }
         }
     }else if (QString::compare(keyVal, "deactivate", Qt::CaseInsensitive)==0){
         //put in verify password here
         if (inputPass == 112345){
            activate = false;
            ui->Display->setText("Success");
+           ui->Status->setText("Inactive");
         }else{
            ui->Display->setText(falsePass);
+           attemptCount += 1;
+           cout << attemptCount << endl;
+
+           if (attemptCount == 3){
+
+               ui->Display->setText("Wait 10 seconds");
+           }
         }
     }
 

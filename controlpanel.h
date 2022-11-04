@@ -2,6 +2,18 @@
 #define CONTROLPANEL_H
 
 #include <QMainWindow>
+#include <QTimer>
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
+#include <dos.h>
+#include <windows.h>
+#include <iostream>
+
+#include <chrono>
+#include <thread>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ControlPanel; }
