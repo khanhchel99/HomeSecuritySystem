@@ -1,11 +1,13 @@
+#include <iostream>
+#include <cstdlib>
+#include <vector>
+#include <unistd.h>
 #include "controlpanel.h"
 #include "./ui_controlpanel.h"
+#include "homesystem.h"
 using namespace std;
 
-QString defaultText = "Enter Passcode";
-QString falsePass = "Incorrect, try again";
-int inputPass = 0;
-bool activate = false;
+
 
 ControlPanel::ControlPanel(QWidget *parent)
     : QMainWindow(parent)
@@ -15,6 +17,7 @@ ControlPanel::ControlPanel(QWidget *parent)
 
     //set default text on the display
     ui->Display->setText(defaultText);
+    ui->CurrentState->setText(currState + "deactivated");
 
     //Assign numbers to its button
     QPushButton *numButs[10];
@@ -28,6 +31,8 @@ ControlPanel::ControlPanel(QWidget *parent)
 
     connect(ui->Activate, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->Deactivate, SIGNAL(released()), this, SLOT(KeyPressed()));
+    connect(ui->ChangePass, SIGNAL(released()), this, SLOT(KeyPressed()));
+    connect(ui->Ok, SIGNAL(released()), this, SLOT(ChangePass()));
 
 }
 
@@ -59,26 +64,83 @@ void ControlPanel::KeyPressed(){
     inputPass = displayVal.toInt();
     QPushButton *keyButton = (QPushButton *)sender();
     QString keyVal = keyButton->text();
+    //when activate button is pressed
     if (QString::compare(keyVal, "activate", Qt::CaseInsensitive)==0){
         //put in verify password here
-        if (inputPass == 112345){
+        if (inputPass == password.toInt()){
            activate = true;
+           ui->CurrentState->setText(currState + "activated");
            ui->Display->setText("Success");
+           attemptCount = 0;
+           //set state of homesystem and alarm
+           homesystem::setSystemState(true);
+           homesystem::setAlarmState(true);
         }else{
            ui->Display->setText(falsePass);
+           if(attemptCount<5){
+               //increment 1 for every failed attempt
+               attemptCount= attemptCount + 1;
+           }else{
+               //alert for exceeding number of failed attempts
+               //call alertFunction in HomeSystem
+               homesystem::ringAlarm();
+               attemptCount = 0;
+           }
         }
+    //when deactivate button is pressed
     }else if (QString::compare(keyVal, "deactivate", Qt::CaseInsensitive)==0){
         //put in verify password here
-        if (inputPass == 112345){
+        if (inputPass == password.toInt()){
            activate = false;
+           ui->CurrentState->setText(currState + "deactivated");
            ui->Display->setText("Success");
+           attemptCount = 0;
+           //set state of homesystem and alarm
+           homesystem::setSystemState(false);
+           homesystem::setAlarmState(false);
         }else{
            ui->Display->setText(falsePass);
+           if(attemptCount<4){
+               //increment 1 for every failed attempt
+               attemptCount= attemptCount + 1;
+           }else{
+               //alert for exceeding number of failed attempts
+               //call alertFunction in HomeSystem
+               homesystem::ringAlarm();
+               attemptCount = 0;
+           }
+        }
+    }else if (QString::compare(keyVal, "change pass", Qt::CaseInsensitive)==0){
+        //put in verify password here
+        if (inputPass == password.toInt()){
+           ui->Display->setText("Please enter new 6 digits passcode");
+           changeAllow = true;
+           attemptCount = 0;
+        }else{
+           ui->Display->setText(falsePass);
+           if(attemptCount<4){
+               //increment 1 for every failed attempt
+               attemptCount= attemptCount + 1;
+           }else{
+               //alert for exceeding number of failed attempts
+               //call alertFunction in HomeSystem
+               cout << "ALERT!" << endl;
+               attemptCount = 0;
+           }
         }
     }
 
 }
 
-
-
-
+//process when OK button is clicked to change passcode
+void ControlPanel::ChangePass(){
+    if (changeAllow == true && ui->Display->text().length() == 6){
+        password = ui->Display->text();
+        ui->Display->setText("Passcode changed");
+        changeAllow = false;
+    }else if(changeAllow == false){
+        ui->Display->setText("Enter passcode and click Change Pass");
+    }else if (ui->Display->text().length() != 6){
+        ui->Display->setText("6 digits only");
+    }
+}
