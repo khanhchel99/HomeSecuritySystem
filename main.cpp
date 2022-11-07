@@ -1,5 +1,5 @@
-#include "controlpanel.h"
-#include "homesystem.cpp"
+
+#include "homesystem.h"
 #include <QApplication>
 
 #include <signal.h>
@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
 
 //    signal(SIGINT, signal_callback);
 
+    syst->getSensor()->setDisturbance(true);
 
     while(syst->getControlPanel()->getPowerStatus() == 1){
 
@@ -32,30 +33,34 @@ int main(int argc, char *argv[])
         if (syst->getControlPanel()->getActiveStatus() != syst->getSystemState()){
 
             syst->setSystemState(syst->getControlPanel()->getActiveStatus());
-            cout << syst->getSystemState() << endl;
+//            cout << syst->getSystemState() << endl;
         }
 
         // if the system status is active, scan for sensor inputs
+//        cout << syst->getSystemState()<< endl;
+//        cout << "----" << endl;
 
         if (syst->getSystemState() == true){
 
-//            if (Sensor->state = true){
+            if (syst->getSensor()->getDisturbance() == true){
 
-//                Alarm* alarm = syst->ringAlarm("Motion Sensor Triggered");
+                Alarm* alarm = syst->ringAlarm("Motion Sensor Triggered");
 
-//                while(alarm->checkAlarm() == 1){
+                while(alarm->checkAlarm() == 1){
 
-//                    if (syst->getControlPanel()->getAlarmState() == 0){
+//                    cout << syst->getSensor()->getDisturbance() << endl;
 
-//                        auto now = std::chrono::system_clock::now();
-//                        time_t ID = std::chrono::system_clock::to_time_t(now);
+                    if (syst->getControlPanel()->getAlarmState() == 0){
 
-//                        syst->deactivateAlarmState();
-//                        alarm->stopAlarm(ID);
-//                    }
-//                }
+                        auto now = std::chrono::system_clock::now();
+                        time_t ID = std::chrono::system_clock::to_time_t(now);
 
-//            }
+                        syst->deactivateAlarmState();
+                        alarm->stopAlarm(ID);
+                    }
+                }
+
+            }
 
         }
 

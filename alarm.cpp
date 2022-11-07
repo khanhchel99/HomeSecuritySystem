@@ -1,50 +1,34 @@
-#include <iostream>
-#include <iomanip>
-//#include <sqlite3.h>
-#include <string.h>
-#include <chrono>
-#include <sstream>
-#include <vector>
-
-#include <ctime>
+#include "alarm.h"
 
 using namespace std;
 
-class Alarm{
+Alarm::Alarm(time_t ID, string descrip){
 
-private:
-    time_t startID;
+    startID = ID;
+    description = descrip;
     time_t end;
-    string description;
-    bool check;
+    check = 1;
+}
 
-public:
+//setAlarm()
 
-    Alarm(time_t ID, string descrip){
+void Alarm::stopAlarm(time_t endTime){
 
-        startID = ID;
-        description = descrip;
-        time_t end;
-        check = 1;
-    }
+    // stop physical alarm
 
-    //setAlarm()
+    auto now = std::chrono::system_clock::now();
+    end = std::chrono::system_clock::to_time_t(now);
 
-    void stopAlarm(time_t endTime){
+    check = 0;
 
-        // stop physical alarm
+    // store in database INSERT
 
-        auto now = std::chrono::system_clock::now();
-        end = std::chrono::system_clock::to_time_t(now);
+    // INSERT INTO [TABLE] VALUES(startID, end, description);
+}
 
-        check = 0;
+bool Alarm::checkAlarm(){
 
-        // store in database
-    }
+    return check;
+}
 
-    bool checkAlarm(){
 
-        return check;
-    }
-
-};

@@ -22,9 +22,11 @@ ControlPanel::ControlPanel(QWidget *parent)
 
     //set default text on the display
     ui->Display->setText(defaultText);
+    ui->Display->repaint();
 
     // set default text on status bar
     ui->Status->setText(defaultStatusText);
+    ui->Status->repaint();
 
     //Assign numbers to its button
     QPushButton *numButs[10];
@@ -58,10 +60,12 @@ void ControlPanel::NumPressed(){
     //process when number is pressed
     if( (QString::compare(displayVal, defaultText, Qt::CaseInsensitive)==0) || (QString::compare(displayVal, falsePass, Qt::CaseInsensitive)==0) ){
         ui->Display->setText(numVal);
+        ui->Display->repaint();
     }else {
         QString newDisplayVal = displayVal + numVal;
         int newPasscode = newDisplayVal.toInt();
         ui->Display->setText(QString::number(newPasscode));
+        ui->Display->repaint();
     }
 }
 
@@ -78,6 +82,8 @@ void ControlPanel::KeyPressed(){
            activate = true;
            ui->Display->setText("Success");
            ui->Status->setText("Active");
+           ui->Display->repaint();
+           ui->Status->repaint();
            attemptCount = 0;
         }else{
 
@@ -88,6 +94,14 @@ void ControlPanel::KeyPressed(){
            if (attemptCount == 3){
 
                ui->Display->setText("Wait 10 seconds");
+               ui->Display->repaint();
+
+               const clock_t begin_time = clock();
+
+               while(float(clock() - begin_time) / CLOCKS_PER_SEC < 10){
+                   continue;
+               }
+
                attemptCount = 0;
            }
         }
@@ -97,6 +111,8 @@ void ControlPanel::KeyPressed(){
            activate = false;
            ui->Display->setText("Success");
            ui->Status->setText("Inactive");
+           ui->Display->repaint();
+           ui->Status->repaint();
         }else{
 
            ui->Display->setText(falsePass);
@@ -106,6 +122,7 @@ void ControlPanel::KeyPressed(){
            if (attemptCount == 3){
 
                ui->Display->setText("Wait 10 seconds");
+               ui->Display->repaint();
                attemptCount = 0;
            }
         }
@@ -115,6 +132,8 @@ void ControlPanel::KeyPressed(){
         if (inputPass == truePassCode){
 
             alarmState = 0;
+            ui->Status->setText("Active");
+            ui->Status->repaint();
 
         }else{
 
@@ -125,6 +144,7 @@ void ControlPanel::KeyPressed(){
            if (attemptCount == 3){
 
                ui->Display->setText("Wait 10 seconds");
+               ui->Display->repaint();
                attemptCount = 0;
            }
         }
@@ -144,9 +164,11 @@ void ControlPanel::KeyPressed(){
                 if (inputPass != 0){
                     truePassCode = inputPass;
                     ui->Display->setText("New Passcode");
+                    ui->Display->repaint();
                 }
                 else{
-                    ui->Display->setText("Passcode cant be 0");
+                    ui->Display->setText("No Zero Codes");
+                    ui->Display->repaint();
                 }
             }
         }
@@ -154,6 +176,7 @@ void ControlPanel::KeyPressed(){
     else if (QString::compare(keyVal, "power", Qt::CaseInsensitive)==0){
 
         ui->Display->setText("POWER OFF");
+        ui->Display->repaint();
         power = 0;
 
     }
@@ -173,13 +196,14 @@ bool ControlPanel::getPowerStatus(){
 }
 
 void ControlPanel::activateAlarmState(){
-
+    cout << "ALARM STATE ACTIVATED" << endl;
     alarmState = 1;
     ui->Status->setText("ALARM");
+    ui->Status->repaint();
 }
 
-bool getAlarmState(){
-
+bool ControlPanel::getAlarmState(){
+    cout << "ALARM STATE RETRIEVED IN MAIN" << endl;
     return alarmState;
 }
 

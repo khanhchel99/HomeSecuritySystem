@@ -14,6 +14,8 @@
 
 #include <chrono>
 #include <thread>
+#include <ctime>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ControlPanel; }
@@ -30,6 +32,7 @@ public:
     bool getPowerStatus();
     void activateAlarmState();
     bool getAlarmState();
+
 
 private:
     Ui::ControlPanel *ui;
