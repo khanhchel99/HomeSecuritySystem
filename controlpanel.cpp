@@ -203,7 +203,7 @@ void ControlPanel::activateAlarmState(){
 }
 
 bool ControlPanel::getAlarmState(){
-    cout << "ALARM STATE RETRIEVED IN MAIN" << endl;
+//    cout << "ALARM STATE RETRIEVED IN MAIN" << endl;
     return alarmState;
 }
 
