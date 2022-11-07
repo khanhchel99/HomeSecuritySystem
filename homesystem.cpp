@@ -1,86 +1,48 @@
+#include <iostream>
+using namespace std;
 #include "homesystem.h"
 
-using namespace std;
+homesystem* homesystem::ptrInstance = nullptr;
 
 
-HomeSystem::HomeSystem(int id, int argC, char *argV[]){
-
-    homeID = id;
-    systemState = false;
-    bool sensorState = false;
-    bool alarmState = false;
-
-    sensor = new Sensor();
-
-    a = new QApplication(argC, argV);
-    controlPanel =  new ControlPanel();
-    controlPanel->show();
-    a->exec();
+homesystem::homesystem()
+{
 
 }
 
-
-HomeSystem::~HomeSystem(){
-    a->closeAllWindows();
-    delete controlPanel;
-
+void homesystem::privateSetSystemState(bool privSysState){
+    systemState = privSysState;
 }
-
-void HomeSystem::activateSystem(){
-    systemState = true;
-
-}
-
-void HomeSystem::deactivateSystem(){
-    systemState = false;
-}
-
-bool HomeSystem::getSystemState(){
-
+bool homesystem::privateGetSystemState(){
     return systemState;
 }
-
-void HomeSystem::setSystemState(bool state){
-
-    systemState = state;
+void homesystem::privateSetAlarmState(bool privAlState){
+    alarmState = privAlState;
+}
+bool homesystem::privateGetAlarmState(){
+    return alarmState;
+}
+void homesystem::privateRingAlarm(){
+    cout << "Alarm goes off" << endl;
 }
 
-ControlPanel* HomeSystem::getControlPanel(){
-
-    return controlPanel;
+void homesystem::setSystemState(bool sysState){
+    instance().privateSetSystemState(sysState);
+}
+bool homesystem::getSystemState(){
+    return instance().privateGetSystemState();
+}
+void homesystem::setAlarmState(bool alState){
+    instance().privateSetAlarmState(alState);
+}
+bool homesystem::getAlarmState(){
+    return instance().privateGetAlarmState();
+}
+void homesystem::ringAlarm(){
+    instance().privateRingAlarm();
 }
 
-QApplication* HomeSystem::getQApp(){
-
-    return a;
+void homesystem::Deactivate(){
+    delete ptrInstance;
+    ptrInstance = nullptr;
 }
-
-Alarm* HomeSystem::ringAlarm(string description){
-
-    auto now = std::chrono::system_clock::now();
-    time_t ID = std::chrono::system_clock::to_time_t(now);
-
-    alarmState = true;
-    controlPanel->activateAlarmState();
-
-    return new Alarm(ID, description);
-}
-
-void HomeSystem::deactivateAlarmState(){
-    cout << "ALARM STATE DEACTIVATED" << endl;
-    sensor->setDisturbance(false);
-
-}
-
-Sensor* HomeSystem::getSensor(){
-
-    return sensor;
-}
-
-
-
-
-
-
-
-

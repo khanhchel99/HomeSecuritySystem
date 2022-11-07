@@ -1,18 +1,13 @@
+#include <iostream>
+#include <cstdlib>
+#include <vector>
+#include <unistd.h>
 #include "controlpanel.h"
 #include "./ui_controlpanel.h"
+#include "homesystem.h"
 using namespace std;
 
-QString defaultText = "Enter Passcode";
-QString defaultStatusText = "Inactive";
-QString falsePass = "Incorrect, try again";
-int inputPass = 0;
-bool activate = false;
-int attemptCount = 0;
-int timer;
-bool power = 1;
-bool alarmState = 0;
-int truePassCode = 112345;
-bool changecode = false;
+
 
 ControlPanel::ControlPanel(QWidget *parent)
     : QMainWindow(parent)
@@ -22,11 +17,7 @@ ControlPanel::ControlPanel(QWidget *parent)
 
     //set default text on the display
     ui->Display->setText(defaultText);
-    ui->Display->repaint();
-
-    // set default text on status bar
-    ui->Status->setText(defaultStatusText);
-    ui->Status->repaint();
+    ui->CurrentState->setText(currState + "deactivated");
 
     //Assign numbers to its button
     QPushButton *numButs[10];
@@ -40,9 +31,9 @@ ControlPanel::ControlPanel(QWidget *parent)
 
     connect(ui->Activate, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->Deactivate, SIGNAL(released()), this, SLOT(KeyPressed()));
-    connect(ui->Power, SIGNAL(released()), this, SLOT(KeyPressed()));
-    connect(ui->stopAlarm, SIGNAL(released()), this, SLOT(KeyPressed()));
-    connect(ui->ChangeCode, SIGNAL(released()), this, SLOT(KeyPressed()));
+    connect(ui->ChangePass, SIGNAL(released()), this, SLOT(KeyPressed()));
+    connect(ui->Ok, SIGNAL(released()), this, SLOT(ChangePass()));
+
 }
 
 ControlPanel::~ControlPanel()
@@ -60,12 +51,10 @@ void ControlPanel::NumPressed(){
     //process when number is pressed
     if( (QString::compare(displayVal, defaultText, Qt::CaseInsensitive)==0) || (QString::compare(displayVal, falsePass, Qt::CaseInsensitive)==0) ){
         ui->Display->setText(numVal);
-        ui->Display->repaint();
     }else {
         QString newDisplayVal = displayVal + numVal;
         int newPasscode = newDisplayVal.toInt();
         ui->Display->setText(QString::number(newPasscode));
-        ui->Display->repaint();
     }
 }
 
@@ -75,138 +64,83 @@ void ControlPanel::KeyPressed(){
     inputPass = displayVal.toInt();
     QPushButton *keyButton = (QPushButton *)sender();
     QString keyVal = keyButton->text();
+    //when activate button is pressed
     if (QString::compare(keyVal, "activate", Qt::CaseInsensitive)==0){
-
         //put in verify password here
-        if (inputPass == truePassCode){
+        if (inputPass == password.toInt()){
            activate = true;
+           ui->CurrentState->setText(currState + "activated");
            ui->Display->setText("Success");
-           ui->Status->setText("Active");
-           ui->Display->repaint();
-           ui->Status->repaint();
            attemptCount = 0;
+           //set state of homesystem and alarm
+           homesystem::setSystemState(true);
+           homesystem::setAlarmState(true);
         }else{
-
            ui->Display->setText(falsePass);
-           attemptCount += 1;
-           cout << attemptCount << endl;
-
-           if (attemptCount == 3){
-
-               ui->Display->setText("Wait 10 seconds");
-               ui->Display->repaint();
-
-               const clock_t begin_time = clock();
-
-               while(float(clock() - begin_time) / CLOCKS_PER_SEC < 10){
-                   continue;
-               }
-
+           if(attemptCount<5){
+               //increment 1 for every failed attempt
+               attemptCount= attemptCount + 1;
+           }else{
+               //alert for exceeding number of failed attempts
+               //call alertFunction in HomeSystem
+               homesystem::ringAlarm();
                attemptCount = 0;
            }
         }
+    //when deactivate button is pressed
     }else if (QString::compare(keyVal, "deactivate", Qt::CaseInsensitive)==0){
         //put in verify password here
-        if (inputPass == truePassCode){
+        if (inputPass == password.toInt()){
            activate = false;
+           ui->CurrentState->setText(currState + "deactivated");
            ui->Display->setText("Success");
-           ui->Status->setText("Inactive");
-           ui->Display->repaint();
-           ui->Status->repaint();
+           attemptCount = 0;
+           //set state of homesystem and alarm
+           homesystem::setSystemState(false);
+           homesystem::setAlarmState(false);
         }else{
-
            ui->Display->setText(falsePass);
-           attemptCount += 1;
-           cout << attemptCount << endl;
-
-           if (attemptCount == 3){
-
-               ui->Display->setText("Wait 10 seconds");
-               ui->Display->repaint();
+           if(attemptCount<4){
+               //increment 1 for every failed attempt
+               attemptCount= attemptCount + 1;
+           }else{
+               //alert for exceeding number of failed attempts
+               //call alertFunction in HomeSystem
+               homesystem::ringAlarm();
+               attemptCount = 0;
+           }
+        }
+    }else if (QString::compare(keyVal, "change pass", Qt::CaseInsensitive)==0){
+        //put in verify password here
+        if (inputPass == password.toInt()){
+           ui->Display->setText("Please enter new 6 digits passcode");
+           changeAllow = true;
+           attemptCount = 0;
+        }else{
+           ui->Display->setText(falsePass);
+           if(attemptCount<4){
+               //increment 1 for every failed attempt
+               attemptCount= attemptCount + 1;
+           }else{
+               //alert for exceeding number of failed attempts
+               //call alertFunction in HomeSystem
+               cout << "ALERT!" << endl;
                attemptCount = 0;
            }
         }
     }
-    else if (QString::compare(keyVal, "stopalarm", Qt::CaseInsensitive)==0){
 
-        if (inputPass == truePassCode){
+}
 
-            alarmState = 0;
-            ui->Status->setText("Active");
-            ui->Status->repaint();
-
-        }else{
-
-           ui->Display->setText(falsePass);
-           attemptCount += 1;
-           cout << attemptCount << endl;
-
-           if (attemptCount == 3){
-
-               ui->Display->setText("Wait 10 seconds");
-               ui->Display->repaint();
-               attemptCount = 0;
-           }
-        }
+//process when OK button is clicked to change passcode
+void ControlPanel::ChangePass(){
+    if (changeAllow == true && ui->Display->text().length() == 6){
+        password = ui->Display->text();
+        ui->Display->setText("Passcode changed");
+        changeAllow = false;
+    }else if(changeAllow == false){
+        ui->Display->setText("Enter passcode and click Change Pass");
+    }else if (ui->Display->text().length() != 6){
+        ui->Display->setText("6 digits only");
     }
-    else if (QString::compare(keyVal, "changecode", Qt::CaseInsensitive)==0){
-
-        if(inputPass == truePassCode){
-
-            inputPass = 0;
-            changecode = true;
-
-            ui->Display->setText("Enter New Code");
-            ui->Display->repaint();
-
-            if (QString::compare(keyVal, "changecode", Qt::CaseInsensitive)==0){
-
-                if (inputPass != 0){
-                    truePassCode = inputPass;
-                    ui->Display->setText("New Passcode");
-                    ui->Display->repaint();
-                }
-                else{
-                    ui->Display->setText("No Zero Codes");
-                    ui->Display->repaint();
-                }
-            }
-        }
-    }
-    else if (QString::compare(keyVal, "power", Qt::CaseInsensitive)==0){
-
-        ui->Display->setText("POWER OFF");
-        ui->Display->repaint();
-        power = 0;
-
-    }
-
-
 }
-
-bool ControlPanel::getActiveStatus(){
-
-    return activate;
-}
-
-
-bool ControlPanel::getPowerStatus(){
-
-    return power;
-}
-
-void ControlPanel::activateAlarmState(){
-    cout << "ALARM STATE ACTIVATED" << endl;
-    alarmState = 1;
-    ui->Status->setText("ALARM");
-    ui->Status->repaint();
-}
-
-bool ControlPanel::getAlarmState(){
-//    cout << "ALARM STATE RETRIEVED IN MAIN" << endl;
-    return alarmState;
-}
-
-
-
-
