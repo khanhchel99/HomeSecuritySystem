@@ -1,7 +1,13 @@
+/*
+    Author: Khanh Nguyen, Ian Guenther Green, Shubh Shah, Tabish Jabir
+    Description: Alarm class that ring the alarm, stop alarm, get the state of the alarm
+    Date: Nov 6, 2022
+*/
 #include <iostream>
 using namespace std;
 #include "alarm.h"
 
+//allocate pointer
 alarm* alarm::ptrInstance = nullptr;
 
 
@@ -36,6 +42,7 @@ void alarm::stopAlarm(){
 bool alarm::checkAlarmState(){
     return instance().privateCheckAlarmState();
 }
+//delete object
 void alarm::Delete(){
     delete ptrInstance;
     ptrInstance = nullptr;

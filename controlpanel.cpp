@@ -1,6 +1,11 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+/*
+    Author: Khanh Nguyen
+    Description: UI for the control panel, process button pressed, check for password, etc.
+    Date: Nov 3, 2022
+*/
 #include <unistd.h>
 #include "controlpanel.h"
 #include "./ui_controlpanel.h"

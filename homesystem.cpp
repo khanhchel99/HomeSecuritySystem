@@ -1,3 +1,8 @@
+/*
+    Author: Khanh Nguyen
+    Description: Homesystem Singleton class that set,get state of alarm and system, ring or stop alarm
+    Date: Nov 3, 2022
+*/
 #include <iostream>
 using namespace std;
 //

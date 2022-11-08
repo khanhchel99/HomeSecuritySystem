@@ -1,3 +1,9 @@
+/*
+    Author: Khanh Nguyen, Ian Guenther Green, Shubh Shah, Tabish Jabir
+    Description: Alarm class header file
+    Date: Nov 6, 2022
+*/
+
 #ifndef ALARM_H
 #define ALARM_H
 #include <ctime>
