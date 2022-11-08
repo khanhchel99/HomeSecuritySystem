@@ -5,6 +5,7 @@
 #include "controlpanel.h"
 #include "./ui_controlpanel.h"
 #include "homesystem.h"
+#include "alarm.h"
 using namespace std;
 
 
@@ -144,3 +145,20 @@ void ControlPanel::ChangePass(){
         ui->Display->setText("6 digits only");
     }
 }
+
+void ControlPanel::EnterAlarmState(){
+
+    if (alarmState == true){
+        ui->CurrentState->setText("ALARM");
+    }
+};
+
+
+
+void ControlPanel::StopAlarm(){
+    if (alarmState == false){
+
+        Alarm::stopAlarm();
+        alarmState = false;
+    }
+};

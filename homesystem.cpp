@@ -1,10 +1,12 @@
 #include <iostream>
+#include <ctime>
 using namespace std;
 //
 #include <QApplication>
 
 #include "homesystem.h"
 #include "controlpanel.h"
+#include "alarm.h"
 
 homesystem* homesystem::ptrInstance = nullptr;
 
@@ -26,7 +28,10 @@ bool homesystem::privateGetAlarmState(){
     return alarmState;
 }
 void homesystem::privateRingAlarm(){
-    cout << "Alarm goes off" << endl;
+
+    auto now = std::chrono::system_clock::now();
+    time_t startID = std::chrono::system_clock::to_time_t(now);
+    Alarm::setAlarm(startID);
 }
 //
 void homesystem::privateStartUp(int argc, char *argv[]){

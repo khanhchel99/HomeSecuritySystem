@@ -1,18 +1,6 @@
 #include "alarm.h"
 
-Alarm* Alarm::_instance = NULL;
-
-
-Alarm *Alarm::instance() {
-    if(_instance == NULL)
-        _instance = new Alarm("LED alarm", 1);
-
-    return _instance;
-    
-}
-
 Alarm::Alarm(string descrip, int pin){
-        //startID = ID;
         description = descrip;
         alarmPin = pin;
         time_t end;
@@ -20,19 +8,20 @@ Alarm::Alarm(string descrip, int pin){
         alarmPin = 1;
         
         // initialize physical alarm pins
-        wiringPiSetup();
-        pinMode(alarmPin, OUTPUT);
+//        wiringPiSetup();
+//        pinMode(alarmPin, OUTPUT);
 }
 
-void Alarm::setAlarm() {
-    digitalWrite(alarmPin, HIGH);
+void Alarm::privateSetAlarm(time_t ID) {
+//    digitalWrite(alarmPin, HIGH);
+    startID = ID;
     alarmState = true;
 }
 
-void Alarm::stopAlarm(){
+void Alarm::privateStopAlarm(){
 
     // stop physical alarm
-    digitalWrite(alarmPin, LOW);
+//    digitalWrite(alarmPin, LOW);
 
     auto now = std::chrono::system_clock::now();
     end = std::chrono::system_clock::to_time_t(now);
@@ -42,6 +31,21 @@ void Alarm::stopAlarm(){
     // store in database
 }
 
-bool Alarm::checkAlarmState(){
+bool Alarm::privateCheckAlarmState(){
         return alarmState;
+}
+
+void Alarm::setAlarm(time_t ID){
+
+    instance().privateSetAlarm(ID);
+}
+
+void Alarm::stopAlarm(){
+
+    instance().privateStopAlarm();
+}
+
+bool Alarm::checkAlarmState(){
+
+    instance().privateCheckAlarmState();
 }

@@ -37,6 +37,8 @@ private:
     //current state of home system to be displayed
     QString currState = "System ";
 
+    bool alarmState;
+
 
 //functions to be executed whenever a signal is submitted
 private slots:
@@ -46,6 +48,8 @@ private slots:
     void KeyPressed();
 
     void ChangePass();
+    void EnterAlarmState();
+    void StopAlarm();
 };
 
 
