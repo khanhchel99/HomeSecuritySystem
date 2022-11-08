@@ -23,6 +23,8 @@ set(PROJECT_SOURCES
         homesystem.cpp
         alarm.h
         alarm.cpp
+#        sensor.h
+#        sensor.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

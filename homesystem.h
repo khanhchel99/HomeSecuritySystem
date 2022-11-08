@@ -17,6 +17,7 @@ public:
     static void setAlarmState(bool alState);
     static bool getAlarmState();
     static void ringAlarm();
+    static void stopAlarm();
     static void Delete();
     //open control panel
     static void startUp(int argc, char *argv[]);
@@ -40,6 +41,7 @@ private:
     void privateSetAlarmState(bool privAlState);
     bool privateGetAlarmState();
     void privateRingAlarm();
+    void privateStopAlarm();
     void privateStartUp(int argc, char *argv[]);
 };
 

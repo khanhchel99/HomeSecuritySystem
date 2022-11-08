@@ -32,6 +32,7 @@ ControlPanel::ControlPanel(QWidget *parent)
     connect(ui->Activate, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->Deactivate, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->ChangePass, SIGNAL(released()), this, SLOT(KeyPressed()));
+    connect(ui->StopAlarm, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->Ok, SIGNAL(released()), this, SLOT(ChangePass()));
 
 }
@@ -124,7 +125,24 @@ void ControlPanel::KeyPressed(){
            }else{
                //alert for exceeding number of failed attempts
                //call alertFunction in HomeSystem
-               cout << "ALERT!" << endl;
+               homesystem::ringAlarm();
+               attemptCount = 0;
+           }
+        }
+    }else if (QString::compare(keyVal, "stop alarm", Qt::CaseInsensitive)==0){
+        //put in verify password here
+        if (inputPass == password.toInt()){
+           ui->Display->setText("Alarm Stopped");
+           homesystem::stopAlarm();
+        }else{
+           ui->Display->setText(falsePass);
+           if(attemptCount<4){
+               //increment 1 for every failed attempt
+               attemptCount= attemptCount + 1;
+           }else{
+               //alert for exceeding number of failed attempts
+               //call alertFunction in HomeSystem
+               homesystem::ringAlarm();
                attemptCount = 0;
            }
         }

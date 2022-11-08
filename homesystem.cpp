@@ -5,6 +5,7 @@ using namespace std;
 
 #include "homesystem.h"
 #include "controlpanel.h"
+#include "alarm.h"
 
 homesystem* homesystem::ptrInstance = nullptr;
 
@@ -26,9 +27,12 @@ bool homesystem::privateGetAlarmState(){
     return alarmState;
 }
 void homesystem::privateRingAlarm(){
-    cout << "Alarm goes off" << endl;
+    alarm::setAlarm("now");
 }
-//
+void homesystem::privateStopAlarm(){
+    alarm::stopAlarm();
+}
+//open control panel
 void homesystem::privateStartUp(int argc, char *argv[]){
     QApplication a(argc, argv);
     ControlPanel w;
@@ -51,6 +55,9 @@ bool homesystem::getAlarmState(){
 }
 void homesystem::ringAlarm(){
     instance().privateRingAlarm();
+}
+void homesystem::stopAlarm(){
+    instance().privateStopAlarm();
 }
 void homesystem::Delete(){
     delete ptrInstance;
