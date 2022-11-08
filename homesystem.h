@@ -8,6 +8,7 @@
 #define HOMESYSTEM_H
 
 
+
 class homesystem
 {
 public:
@@ -16,7 +17,10 @@ public:
     static void setAlarmState(bool alState);
     static bool getAlarmState();
     static void ringAlarm();
-    static void Deactivate();
+    static void Delete();
+    //open control panel
+    static void startUp(int argc, char *argv[]);
+
 private:
     homesystem();
 
@@ -36,6 +40,7 @@ private:
     void privateSetAlarmState(bool privAlState);
     bool privateGetAlarmState();
     void privateRingAlarm();
+    void privateStartUp(int argc, char *argv[]);
 };
 
 #endif // HOMESYSTEM_H
