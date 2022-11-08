@@ -1,34 +1,47 @@
 #include "alarm.h"
 
-using namespace std;
+Alarm* Alarm::_instance = NULL;
 
-Alarm::Alarm(time_t ID, string descrip){
 
-    startID = ID;
-    description = descrip;
-    time_t end;
-    check = 1;
+Alarm *Alarm::instance() {
+    if(_instance == NULL)
+        _instance = new Alarm("LED alarm", 1);
+
+    return _instance;
+    
 }
 
-//setAlarm()
+Alarm::Alarm(string descrip, int pin){
+        //startID = ID;
+        description = descrip;
+        alarmPin = pin;
+        time_t end;
+        alarmState  = false;
+        alarmPin = 1;
+        
+        // initialize physical alarm pins
+        wiringPiSetup();
+        pinMode(alarmPin, OUTPUT);
+}
 
-void Alarm::stopAlarm(time_t endTime){
+void Alarm::setAlarm() {
+    digitalWrite(alarmPin, HIGH);
+    alarmState = true;
+}
+
+void Alarm::stopAlarm(){
 
     // stop physical alarm
+    digitalWrite(alarmPin, LOW);
 
     auto now = std::chrono::system_clock::now();
     end = std::chrono::system_clock::to_time_t(now);
 
-    check = 0;
+    alarmState = false;
 
-    // store in database INSERT
-
-    // INSERT INTO [TABLE] VALUES(startID, end, description);
+    // store in database
 }
 
-bool Alarm::checkAlarm(){
-
-    return check;
+bool Alarm::checkAlarmState(){
+        return alarmState;
 }
-
-
