@@ -16,15 +16,21 @@ alarm::alarm(string descript, int pin)
     description = descript;
     alarmPin = pin;
 
+    // initialize physical alarm pins
+    wiringPiSetup();
+    pinMode(alarmPin, OUTPUT);
+
 }
 
 
 void alarm::privateSetAlarm(string startID){
     alarmState = true;
+    digitalWrite(alarmPin, HIGH);
     cout << "Alarm ringing" + startID << endl;
 }
 void alarm::privateStopAlarm(){
     alarmState = false;
+    digitalWrite(alarmPin, LOW);
     cout << "Alarm stopped" << endl;
 }
 bool alarm::privateCheckAlarmState(){
