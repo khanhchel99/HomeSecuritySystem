@@ -8,6 +8,7 @@
 #define ALARM_H
 #include <ctime>
 #include <string>
+#include <wiringPi.h>
 using namespace std;
 
 class alarm
