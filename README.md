@@ -26,6 +26,10 @@ Make the project platform specific:
 $ qmake 'filename'.pro
 ```
 This creates a Makefile, this will be used to run the project, but first one line needs to be modified. 
+Open the MakeFile
+```
+nano Makefile
+```
 Ensure that in the LIBS line, the following library is included.
 ```
 -lwiringPi
@@ -42,4 +46,4 @@ $ ./'filename'
 ## Hardware setup
 The security system has two hardware peripherals wired to the raspberry pi's GPIO pins. 
 The PIR must be wired to wiring pin 0 (GPIO 17) and the alaram must be wired to wiring pin 1 (GPIO 18).
-The following [Figure](https://pinout.xyz/) can be used for reference.
+This [Figure](https://pinout.xyz/) can be used for reference.
