@@ -7,7 +7,7 @@
 #ifndef HOMESYSTEM_H
 #define HOMESYSTEM_H
 
-
+#include "sensorthread.h"
 
 class homesystem
 {
@@ -28,6 +28,8 @@ public:
     static void Delete();
     //open control panel
     static void startUp(int argc, char *argv[]);
+
+    sensorThread *sThread;
 
 private:
     homesystem();
@@ -58,6 +60,8 @@ private:
     void privateStopAlarm();
     //private function to open control panel
     void privateStartUp(int argc, char *argv[]);
+    //stop receiving input from sensor
+    void privateStopSensor();
 };
 
 #endif // HOMESYSTEM_H
