@@ -30,9 +30,9 @@ Open the MakeFile
 ```
 nano Makefile
 ```
-Ensure that in the LIBS line, the following library is included.
+Ensure that in the LIBS line, the following libraries are included.
 ```
--lwiringPi
+-lwiringPi -L/usr/local/ssl/lib -lssl -lcrypto
 ```
 Now the following make command will comile the Makefile into an executable program.
 ```
