@@ -11,6 +11,7 @@ using namespace std;
 #include "homesystem.h"
 #include "controlpanel.h"
 #include "alarm.h"
+#include "sensorthread.h"
 
 homesystem* homesystem::ptrInstance = nullptr;
 
@@ -42,7 +43,13 @@ void homesystem::privateStartUp(int argc, char *argv[]){
     QApplication a(argc, argv);
     ControlPanel w;
     w.show();
+    sThread = new sensorThread;
+    sThread->start();
     a.exec();
+}
+void homesystem::privateStopSensor(){
+    sThread = new sensorThread;
+    sThread->exit = true;
 }
 
 
@@ -65,8 +72,10 @@ void homesystem::stopAlarm(){
     instance().privateStopAlarm();
 }
 void homesystem::Delete(){
+    instance().privateStopSensor();
     delete ptrInstance;
     ptrInstance = nullptr;
+    alarm::Delete();
 }
 //
 void homesystem::startUp(int argc, char *argv[]){
