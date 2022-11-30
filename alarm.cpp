@@ -20,10 +20,6 @@ alarm::alarm(string descript, int pin)
     wiringPiSetup();
     pinMode(alarmPin, OUTPUT);
 
-    // initialize physical alarm pins
-    wiringPiSetup();
-    pinMode(alarmPin, OUTPUT);
-
 }
 
 
