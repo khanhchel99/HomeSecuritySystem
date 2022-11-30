@@ -2,6 +2,7 @@
 #define SENSORTHREAD_H
 
 #include <QThread>
+#include "sensor.h"
 
 class sensorThread : public QThread
 {
