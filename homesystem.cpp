@@ -15,7 +15,6 @@ using namespace std;
 
 homesystem* homesystem::ptrInstance = nullptr;
 
-
 homesystem::homesystem()
 {
 
@@ -36,13 +35,15 @@ bool homesystem::privateGetAlarmState(){
     return alarmState;
 }
 void homesystem::privateRingAlarm(){
-    alarm::setAlarm("now");
+    alarm::setAlarm("triggered by homesystem");
 }
 void homesystem::privateStopAlarm(){
     alarm::stopAlarm();
 }
 //open control panel
 void homesystem::privateStartUp(int argc, char *argv[]){
+    
+    Analytics::Initialize();
     QApplication a(argc, argv);
     ControlPanel w;
     w.show();

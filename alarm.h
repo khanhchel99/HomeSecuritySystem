@@ -9,6 +9,14 @@
 #include <ctime>
 #include <string>
 #include <wiringPi.h>
+
+#include <chrono>
+#include <sstream>
+#include <iomanip>
+#include <iostream>
+
+#include "analytics.h"
+
 using namespace std;
 
 class alarm
@@ -48,7 +56,7 @@ private:
     bool alarmState;
 
     //private method to ring the alarm
-    void privateSetAlarm(string startID);
+    void privateSetAlarm(string descript);
     //private method to stop the alarm
     void privateStopAlarm();
     //private method to get the alarm state
