@@ -22,6 +22,9 @@ homesystem::homesystem()
 }
 void homesystem::privateSetSystemState(bool privSysState){
     systemState = privSysState;
+  	if(!privSysState) {
+		alarm::stopAlarm();
+    }
 }
 bool homesystem::privateGetSystemState(){
     return systemState;
@@ -72,7 +75,9 @@ void homesystem::stopAlarm(){
     instance().privateStopAlarm();
 }
 void homesystem::Delete(){
-    instance().privateStopSensor();
+	alarm::stopAlarm();
+  	instance().privateSetSystemState(false);
+	instance().privateStopSensor();
     delete ptrInstance;
     ptrInstance = nullptr;
     alarm::Delete();
