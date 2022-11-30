@@ -38,6 +38,7 @@ ControlPanel::ControlPanel(QWidget *parent)
     connect(ui->Deactivate, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->ChangePass, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->StopAlarm, SIGNAL(released()), this, SLOT(KeyPressed()));
+    connect(ui->SendReport, SIGNAL(released()), this, SLOT(KeyPressed()));
     connect(ui->Ok, SIGNAL(released()), this, SLOT(ChangePass()));
 
 }
@@ -104,6 +105,26 @@ void ControlPanel::KeyPressed(){
            //set state of homesystem and alarm
            homesystem::setSystemState(false);
            homesystem::setAlarmState(false);
+        }else{
+           ui->Display->setText(falsePass);
+           if(attemptCount<4){
+               //increment 1 for every failed attempt
+               attemptCount= attemptCount + 1;
+           }else{
+               //alert for exceeding number of failed attempts
+               //call alertFunction in HomeSystem
+               homesystem::ringAlarm();
+               attemptCount = 0;
+           }
+        }
+    }else if (QString::compare(keyVal, "sendreport", Qt::CaseInsensitive)==0){
+        //put in verify password here
+        if (inputPass == password.toInt()){
+           //send report here
+
+           ui->Display->setText("Report Sent");
+           attemptCount = 0;
+
         }else{
            ui->Display->setText(falsePass);
            if(attemptCount<4){

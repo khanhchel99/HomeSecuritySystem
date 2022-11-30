@@ -305,6 +305,13 @@ QPushButton:pressed {
       </property>
      </widget>
     </item>
+    <item row="8" column="2">
+     <widget class="QPushButton" name="SendReport">
+      <property name="text">
+       <string>Send Report</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
